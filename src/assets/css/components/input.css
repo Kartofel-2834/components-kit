@@ -1,0 +1,88 @@
+/* Number */
+
+.input_number__controls {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.4em;
+  margin-right: -0.85rem;
+}
+
+.input_number__controls .button {
+  min-width: 3rem;
+  justify-content: center;
+}
+
+.input_number__controls .button:last-child svg {
+  transform: scaleY(-1);
+}
+
+/* Base */
+
+.inputbase {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  color: var(--theme-text);
+}
+
+.inputbase > * {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.input {
+  width: -webkit-fill-available;
+  width: -moz-fill-available;
+  appearance: none;
+  outline: none;
+  font-size: 1.15em;
+  padding: 0.5em 1em;
+  border: 1px solid var(--theme-text);
+  color: var(--theme-text);
+  background-color: transparent;
+  transition: 0.2s ease-in-out;
+}
+
+.input:focus {
+  border-color: var(--theme);
+}
+
+.input:disabled {
+  opacity: 0.3;
+}
+
+.input.input_icon {
+  padding-right: 2.5em;
+}
+
+.inputbase__icon {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-self: end;
+  font-size: 1.35em;
+  margin-right: 0.65em;
+}
+
+.inputbase__icon_active {
+  color: var(--theme);
+}
+
+.inputbase__icon_disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.inputbase__icon_clickable:not(.inputbase__icon_disabled) {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.inputbase__icon_clickable:not(.inputbase__icon_disabled):hover {
+  opacity: 1;
+}
+
+.inputbase__icon_hided {
+  display: none;
+}
