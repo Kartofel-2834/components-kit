@@ -1,0 +1,33 @@
+.checkbox {
+  display: flex;
+  align-items: center;
+  color: var(--theme-text);
+  width: fit-content;
+  gap: 0.75em;
+  cursor: pointer;
+}
+
+.checkbox__icon {
+  font-size: 1.25em;
+  width: 1em;
+  height: 1em;
+  padding: 0.15em;
+  background-color: transparent;
+  border: 1px solid grey;
+  color: var(--theme-text);
+  transition: 0.2s ease-in-out;
+}
+
+.checkbox__icon svg {
+  transform: scale(0);
+  transition: 0.2s ease-in-out;
+}
+
+.checkbox.checkbox_active .checkbox__icon {
+  border-color: var(--theme);
+  background-color: var(--theme);
+}
+
+.checkbox.checkbox_active .checkbox__icon svg {
+  transform: scale(1);
+}
