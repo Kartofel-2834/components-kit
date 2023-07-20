@@ -1,0 +1,69 @@
+:root {
+  --primary: #d62c40;
+  --primary-faded: #ecf5ff;
+  --primary-text: #ffffff;
+
+  --success: #67c23a;
+  --success-faded: #f0f9eb;
+  --success-text: #ffffff;
+
+  --info: #409EFF;
+  --info-faded: #f4f4f5;
+  --info-text: #ffffff;
+
+  --default: #909399;
+  --default-faded: #f4f4f5;
+  --default-text: #ffffff;
+
+  --warning: #e6a23c;
+  --warning-faded: #fdf6ec;
+  --warning-text: #ffffff;
+
+  --danger: #f56c6c;
+  --danger-faded: #fef0f0;
+  --danger-text: #ffffff;
+}
+
+.primary {
+  --theme: var(--primary);
+  --theme-text: var(--primary-text);
+  --theme-faded: var(--primary-faded);
+}
+
+.success {
+  --theme: var(--success);
+  --theme-text: var(--success-text);
+  --theme-faded: var(--success-faded);
+}
+
+.info {
+  --theme: var(--info);
+  --theme-text: var(--info-text);
+  --theme-faded: var(--info-faded);
+}
+
+.default {
+  --theme: var(--default);
+  --theme-text: var(--default-text);
+  --theme-faded: var(--default-faded);
+}
+
+.warning {
+  --theme: var(--warning);
+  --theme-text: var(--warning-text);
+  --theme-faded: var(--warning-faded);
+}
+
+.danger {
+  --theme: var(--danger);
+  --theme-text: var(--danger-text);
+  --theme-faded: var(--danger-faded);
+}
+
+* {
+  font-family: sans-serif;
+}
+
+body {
+  background-color: #2b2c2f;
+}
