@@ -1,26 +1,29 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div style="width: 20%; margin: 0 auto">
+    <Input
+      type="number"
+      :value="kamal"
+      :min="0"
+      :max="100"
+      controls
+      placeholder="Age"
+      @change="(v) => (kamal = v)"
+    />
+  </div>
+
+  {{ kamal }}
 </template>
 
-<script>
-import HelloWorld from "./components/HelloWorld.vue";
+<script setup>
+import { ref } from "vue";
 
-export default {
-  name: "App",
-  components: {
-    HelloWorld,
-  },
-};
+import Input from "@/components/Input";
+import Button from "@/components/Button";
+import Link from "@/components/Link";
+import Radio from "@/components/Radio";
+import Checkbox from "@/components/Checkbox";
+
+const kamal = ref("");
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style src="@/assets/css/index.css" />
