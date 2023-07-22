@@ -9,6 +9,8 @@
       :class="{ input_icon: !!icon || slots?.icon }"
       @input="(e) => setValue(e.target.value)"
       @keydown="(e) => emit('keydown', e)"
+      @focus="(e) => emit('focus', e)"
+      @blur="(e) => emit('blur', e)"
     />
 
     <span class="inputbase__icon">
@@ -35,7 +37,7 @@ import { defineEmits, defineProps, useSlots } from "vue";
 // Components
 import { Icon } from "@iconify/vue";
 
-const emit = defineEmits(["change", "icon", "keydown"]);
+const emit = defineEmits(["change", "icon", "keydown", "focus", "blur"]);
 
 const slots = useSlots();
 

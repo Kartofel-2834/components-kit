@@ -22,6 +22,14 @@
     @change="(v) => emit('change', v)"
   />
 
+  <PhoneInput
+    v-else-if="type === 'phone'"
+    :value="value"
+    :placeholder="placeholder"
+    :disabled="disabled"
+    @change="(v) => emit('change', v)"
+  />
+
   <BaseInput
     v-else
     :value="value"
@@ -39,12 +47,13 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed, ref } from "vue";
+import { defineProps, defineEmits, computed } from "vue";
 
 // Components
 import BaseInput from "./base.vue";
 import PasswordInput from "./password.vue";
 import NumberInput from "./number.vue";
+import PhoneInput from "./phone.vue";
 
 const emit = defineEmits(["change", "icon"]);
 

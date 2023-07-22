@@ -1,12 +1,9 @@
 <template>
   <div style="width: 20%; margin: 0 auto">
     <Input
-      type="number"
       :value="kamal"
-      :min="0"
-      :max="100"
-      controls
-      placeholder="Age"
+      type="phone"
+      placeholder="Телефон"
       @change="(v) => (kamal = v)"
     />
   </div>

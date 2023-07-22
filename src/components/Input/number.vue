@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref } from "vue";
+import { defineProps, defineEmits } from "vue";
 
 // Components
 import Button from "../Button";
@@ -74,6 +74,8 @@ function onChange(currentValue) {
 }
 
 function onKeydown(event) {
+  if (event.ctrlKey) return;
+
   const { value: currentValue, selectionStart } = event.target;
   const { key } = event;
 
