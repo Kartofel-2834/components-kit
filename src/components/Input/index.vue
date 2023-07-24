@@ -42,7 +42,9 @@
     @icon="onIconClick"
     @change="(v) => emit('change', v)"
   >
-    <slot name="icon" />
+    <template #icon>
+      <slot name="icon" />
+    </template>
   </BaseInput>
 </template>
 
@@ -60,14 +62,13 @@ const emit = defineEmits(["change", "icon"]);
 const props = defineProps({
   // Base
   value: { type: String, default: "" },
-  type: { type: String, default: "" },
+  type: { type: String, default: "text" },
   theme: { type: String, default: "primary" },
   placeholder: { type: String, default: "" },
   icon: { type: String, required: false },
   iconClickable: { type: Boolean, default: false },
   iconHided: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
-  clearable: { type: Boolean, default: false },
 
   // Number
   min: { type: Number, default: -Infinity },

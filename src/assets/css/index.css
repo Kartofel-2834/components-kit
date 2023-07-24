@@ -1,69 +1,82 @@
 :root {
   --primary: #d62c40;
-  --primary-faded: #ecf5ff;
+  --primary-filled: #2b2c2f;
   --primary-text: #ffffff;
 
   --success: #67c23a;
-  --success-faded: #f0f9eb;
+  --success-filled: #2b2c2f;
   --success-text: #ffffff;
 
-  --info: #409EFF;
-  --info-faded: #f4f4f5;
+  --info: #409eff;
+  --info-filled: #2b2c2f;
   --info-text: #ffffff;
 
   --default: #909399;
-  --default-faded: #f4f4f5;
+  --default-filled: #2b2c2f;
   --default-text: #ffffff;
 
   --warning: #e6a23c;
-  --warning-faded: #fdf6ec;
+  --warning-filled: #2b2c2f;
   --warning-text: #ffffff;
 
   --danger: #f56c6c;
-  --danger-faded: #fef0f0;
+  --danger-filled: #2b2c2f;
   --danger-text: #ffffff;
 }
 
-.primary {
+body, .primary {
   --theme: var(--primary);
   --theme-text: var(--primary-text);
-  --theme-faded: var(--primary-faded);
+  --theme-filled: var(--primary-filled);
 }
 
 .success {
   --theme: var(--success);
   --theme-text: var(--success-text);
-  --theme-faded: var(--success-faded);
+  --theme-filled: var(--success-filled);
 }
 
 .info {
   --theme: var(--info);
   --theme-text: var(--info-text);
-  --theme-faded: var(--info-faded);
+  --theme-filled: var(--info-filled);
 }
 
 .default {
   --theme: var(--default);
   --theme-text: var(--default-text);
-  --theme-faded: var(--default-faded);
+  --theme-filled: var(--default-filled);
 }
 
 .warning {
   --theme: var(--warning);
   --theme-text: var(--warning-text);
-  --theme-faded: var(--warning-faded);
+  --theme-filled: var(--warning-filled);
 }
 
 .danger {
   --theme: var(--danger);
   --theme-text: var(--danger-text);
-  --theme-faded: var(--danger-faded);
+  --theme-filled: var(--danger-filled);
 }
 
 * {
   font-family: sans-serif;
 }
 
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: #e4e4e4;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--theme);
+}
+
 body {
   background-color: #2b2c2f;
+
 }

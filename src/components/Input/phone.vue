@@ -33,7 +33,7 @@ const parsedValue = computed(() => {
   }
 
   const phone = formatPhone(digistOnly, props.start, props.replacements);
-  
+
   return phone;
 });
 
@@ -45,7 +45,7 @@ function onKeydown(event) {
   const { key, ctrlKey: ctrlPressed } = event;
 
   if (allowedButtons.has(key) || ctrlPressed) return;
-  if (props.value.length <= 11 && /[0-9]/.test(key)) return;
+  if (props.value.length < 9 + props.start.length && /[0-9]/.test(key)) return;
 
   event.preventDefault();
 }

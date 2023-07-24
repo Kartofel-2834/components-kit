@@ -1,26 +1,33 @@
 <template>
   <div style="width: 20%; margin: 0 auto">
-    <Input
+    <Select
+      multiple
       :value="kamal"
-      type="phone"
-      placeholder="Телефон"
+      :options="options"
       @change="(v) => (kamal = v)"
     />
   </div>
 
-  {{ kamal }}
+  <p style="color: white">{{ kamal }}</p>
 </template>
 
 <script setup>
 import { ref } from "vue";
 
-import Input from "@/components/Input";
-import Button from "@/components/Button";
-import Link from "@/components/Link";
-import Radio from "@/components/Radio";
-import Checkbox from "@/components/Checkbox";
+import Select from "@/components/Select";
+import Option from "@/components/Select/option.vue";
 
-const kamal = ref("");
+const kamal = ref(null);
+const options = [
+  "aaa ".repeat(50),
+  "b".repeat(50),
+  "c".repeat(50),
+  "d".repeat(30),
+  "e".repeat(30),
+  "f".repeat(30),
+  "g".repeat(30),
+  "h".repeat(30),
+];
 </script>
 
 <style src="@/assets/css/index.css" />
