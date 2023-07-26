@@ -1,14 +1,15 @@
 <template>
   <div
     class="select"
-    :class="{ [theme]: true, select_opened: opened }"
+    :class="{
+      [theme]: true,
+      select_opened: opened && !disabled,
+      select_disabled: disabled,
+    }"
     @click.stop
   >
-    <div class="select__field" @click="() => (opened = !opened)">
-      <div
-        v-if="multiple && Array.isArray(value)"
-        class="select__field__content"
-      >
+    <div class="select__field" @click="toggleOptions">
+      <div v-if="multiple" class="select__field__content">
         <span
           v-for="(option, index) of value"
           :key="option[field] || option || index"
@@ -17,14 +18,23 @@
         >
           {{ option[label] || option }}
         </span>
+
+        <input
+          v-if="filterable"
+          v-model="filter"
+          :placeholder="placeholder"
+          :disabled="!filterable"
+          class="select__field__content__filter"
+          @click.stop="openOptions"
+        />
       </div>
 
       <Input
         v-else
-        :value="currentLabel"
-        placeholder="select"
-        disabled
-        @keydown.prevent
+        :value="opened && filterable ? filter : currentLabel"
+        :placeholder="opened && filterable ? currentLabel : placeholder"
+        :disabled="!filterable"
+        @change="(v) => (filter = v)"
       />
 
       <Icon icon="ep:arrow-up-bold" class="select__opener" />
@@ -32,7 +42,7 @@
 
     <div class="select__dropdown">
       <slot
-        v-for="(option, index) in options"
+        v-for="(option, index) in filteredOptions"
         :key="option[field] || option || index"
         :index="index"
         :option="option"
@@ -48,6 +58,14 @@
           {{ option }}
         </Option>
       </slot>
+
+      <Option
+        v-if="!filteredOptions?.length"
+        disabled
+        class="select__dropdown__nodata"
+      >
+        No options
+      </Option>
     </div>
   </div>
 </template>
@@ -64,7 +82,10 @@ const emit = defineEmits(["change"]);
 
 const props = defineProps({
   value: { required: true },
+  disabled: { type: Boolean, default: false },
   multiple: { type: Boolean, default: false },
+  filterable: { type: Boolean, default: false },
+  placeholder: { type: String, default: "Select" },
   field: { type: String, default: "value" },
   label: { type: String, default: "label" },
   theme: { type: String, default: "primary" },
@@ -72,11 +93,26 @@ const props = defineProps({
 });
 
 const opened = ref(false);
+const filter = ref("");
 
 const currentLabel = computed(() => {
-  if (props.multiple || !props.value) return "";
+  if (!props.value || props.multiple) return "";
 
   return props.value[props.label] || props.value;
+});
+
+const filteredOptions = computed(() => {
+  if (!props.filterable || !filter.value.length) return props.options;
+
+  if (!Array.isArray(props.options)) return [];
+
+  const tester = new RegExp(`${filter.value}`, "gm");
+
+  return props.options.filter((option) => {
+    const v = option[props.field] || option;
+
+    return tester.test(`${v}`);
+  });
 });
 
 function onTagClick(tagIndex) {
@@ -93,10 +129,25 @@ function onSelect(option) {
   }
 }
 
-function singleSelect(option) {
-  if (checkIsEqualOptions(props.value, option)) return;
+function openOptions() {
+  if (props.disabled) return;
 
-  emit("change", option);
+  opened.value = true;
+}
+
+function toggleOptions() {
+  if (props.disabled) return;
+
+  opened.value = !opened.value;
+}
+
+function singleSelect(option) {
+  if (checkIsEqualOptions(props.value, option)) {
+    emit("change", null);
+  } else {
+    emit("change", option);
+  }
+
   opened.value = false;
 }
 

@@ -1,9 +1,9 @@
 <template>
   <div style="width: 20%; margin: 0 auto">
     <Select
-      multiple
       :value="kamal"
       :options="options"
+      multiple
       @change="(v) => (kamal = v)"
     />
   </div>
