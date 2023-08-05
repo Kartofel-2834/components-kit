@@ -1,22 +1,16 @@
 <template>
-  <BaseInput
-    :value="value"
-    :theme="theme"
-    :disabled="disabled"
-    @change="onChange"
-    @keydown="onKeydown"
-  >
-    <template #icon>
-      <div v-if="controls" class="input_number__controls">
+  <BaseInput type="text" @change="onChange" @keydown="onKeydown">
+    <template v-if="dependencies.controls" #icon>
+      <div class="input_number__controls">
         <Button
-          :theme="theme"
-          :disabled="disabled"
+          :theme="dependencies.theme"
+          :disabled="dependencies.disabled"
           icon="ri:arrow-up-s-line"
           @click="up"
         />
         <Button
-          :theme="theme"
-          :disabled="disabled"
+          :theme="dependencies.theme"
+          :disabled="dependencies.disabled"
           icon="ri:arrow-up-s-line"
           @click="down"
         />
@@ -26,7 +20,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineEmits, inject, computed } from "vue";
 
 // Components
 import Button from "../Button";
@@ -34,19 +28,9 @@ import BaseInput from "./base.vue";
 
 const { round, pow } = Math;
 
-const emit = defineEmits(["change"]);
-
-const props = defineProps({
-  value: { type: String, default: "" },
-  min: { type: Number, default: -Infinity },
-  max: { type: Number, default: Infinity },
-
-  theme: { type: String, default: "primary" },
-  controls: { type: Boolean, default: false },
-  disabled: { type: Boolean, default: false },
-  step: { type: Number, default: 1 },
-  precision: { type: Number, default: 2 },
-});
+const emit = defineEmits(["change", "update:model"]);
+const dependencies = inject("dependencies");
+const currentValue = inject("currentValue");
 
 const allowedKeys = new Set(["Backspace", "ArrowLeft", "ArrowRight"]);
 const specialKeys = {
@@ -54,48 +38,53 @@ const specialKeys = {
   ArrowDown: down,
 };
 
-function onChange(currentValue) {
-  const isNegative = currentValue.match(/-/g)?.length === 1;
+function onChange(newValue) {
+  const isNegative = newValue.match(/-/g)?.length === 1;
   let update = roundTo(
     Number(
-      currentValue
+      newValue
         .split(".")
         .map((s) => s.replaceAll(/[^0-9]/g, ""))
         .join(".")
     ),
-    props.precision
+    dependencies.precision
   );
 
   update = update * (isNegative ? -1 : 1);
-  update = update > props.max ? props.max : update;
-  update = update < props.min ? props.min : update;
+  update = update > dependencies.max ? dependencies.max : update;
+  update = update < dependencies.min ? dependencies.min : update;
+  update = `${update}`;
 
-  emit("change", `${update}`);
+  emit("change", update);
+  emit("update:model", update);
 }
 
 function onKeydown(event) {
   if (event.ctrlKey) return;
 
-  const { value: currentValue, selectionStart } = event.target;
+  const { value: inputValue, selectionStart } = event.target;
   const { key } = event;
 
-  let precision = currentValue.split(".");
+  let precision = inputValue.split(".");
   precision = precision?.length > 1 ? precision.pop() : null;
 
   if (allowedKeys.has(key)) return;
 
-  if (specialKeys[key]) return specialKeys[key](event);
+  if (specialKeys[key]) {
+    specialKeys[key](event);
+    return event.preventDefault();
+  }
 
-  const n = Number(props.value) || 0;
+  const n = Number(currentValue.value) || 0;
 
-  if (/[0-9]/g.test(key) && n < props.max && n >= props.min) {
-    if (!precision || selectionStart <= currentValue.indexOf(".")) return;
-    if (precision?.length < props.precision) return;
+  if (/[0-9]/g.test(key) && n < dependencies.max && n >= dependencies.min) {
+    if (!precision || selectionStart <= inputValue.indexOf(".")) return;
+    if (precision?.length < dependencies.precision) return;
   }
 
   switch (key) {
     case ".":
-      if (!currentValue.includes(".")) return;
+      if (!inputValue.includes(".")) return;
       break;
     case "-":
       return;
@@ -104,22 +93,33 @@ function onKeydown(event) {
   event.preventDefault();
 }
 
+function offset(offsetValue = 1) {
+  return roundTo(
+    (Number(currentValue.value) || 0) + offsetValue,
+    dependencies.precision
+  );
+}
+
 function up() {
-  let update = Number(props.value) || 0;
-  update = update + (props.step || 1);
+  let update = offset(1);
 
-  if (update > props.max) return;
+  if (update > dependencies.max) return;
 
-  emit("change", `${roundTo(update, props.precision)}`);
+  update = `${update}`;
+
+  emit("change", update);
+  emit("update:model", update);
 }
 
 function down() {
-  let update = isNaN(props.value) ? 0 : Number(props.value);
-  update = update - (props.step || 1);
+  let update = offset(-1);
 
-  if (update < props.min) return;
+  if (update < dependencies.min) return;
 
-  emit("change", `${roundTo(update, props.precision)}`);
+  update = `${update}`;
+
+  emit("change", update);
+  emit("update:model", update);
 }
 
 function roundTo(num, precision = 2) {

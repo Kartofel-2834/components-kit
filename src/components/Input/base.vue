@@ -1,28 +1,27 @@
 <template>
-  <div class="inputbase" :class="{ [theme]: true }">
+  <div class="inputbase" :class="{ [dependencies.theme]: true }">
     <input
-      :value="value"
-      :type="type"
-      :disabled="disabled"
-      :placeholder="placeholder"
+      :value="currentValue"
+      :type="currentType"
+      :disabled="dependencies.disabled"
+      :placeholder="dependencies.placeholder"
       class="input"
-      :class="{ input_icon: !!icon || slots?.icon }"
-      @input="(e) => setValue(e.target.value)"
+      :class="{ input_icon: isWithIcon }"
+      @input="onValueChange"
       @keydown="(e) => emit('keydown', e)"
       @focus="(e) => emit('focus', e)"
       @blur="(e) => emit('blur', e)"
     />
-
     <span class="inputbase__icon">
       <slot name="icon">
         <Icon
-          v-if="icon"
-          :icon="icon"
+          v-if="isWithIcon"
+          :icon="dependencies.icon"
           :class="{
-            inputbase__icon_hided: iconHided,
-            inputbase__icon_clickable: iconClickable,
-            inputbase__icon_active: iconActive,
-            inputbase__icon_disabled: disabled,
+            inputbase__icon_hided: dependencies.iconHided,
+            inputbase__icon_clickable: dependencies.iconClickable,
+            inputbase__icon_active: dependencies.iconActive,
+            inputbase__icon_disabled: dependencies.disabled,
           }"
           @click="() => emit('icon')"
         />
@@ -32,28 +31,36 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps, useSlots } from "vue";
+import { defineProps, defineEmits, inject, useSlots, computed } from "vue";
 
 // Components
 import { Icon } from "@iconify/vue";
 
-const emit = defineEmits(["change", "icon", "keydown", "focus", "blur"]);
+const emit = defineEmits([
+  "update:modelValue",
+  "change",
+  "icon",
+  "keydown",
+  "focus",
+  "blur",
+]);
 
 const slots = useSlots();
 
+const dependencies = inject("dependencies");
+const currentValue = inject("currentValue", "");
+
 const props = defineProps({
-  value: { type: String, default: "" },
-  type: { type: String, default: "text" },
-  theme: { type: String, default: "primary" },
-  placeholder: { type: String, default: "" },
-  icon: { type: String, required: false },
-  disabled: { type: Boolean, default: false },
-  iconClickable: { type: Boolean, default: false },
-  iconActive: { type: Boolean, default: false },
-  iconHided: { type: Boolean, default: false },
+  type: { String, required: false },
 });
 
-function setValue(v) {
-  emit("change", v);
+const currentType = computed(() => props?.type || dependencies.type);
+const isWithIcon = computed(() => !!dependencies?.icon || !!slots?.icon);
+
+function onValueChange(event) {
+  const newValue = event.target.value;
+
+  emit("update:modelValue", newValue);
+  emit("change", newValue);
 }
 </script>

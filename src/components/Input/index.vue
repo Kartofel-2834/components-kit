@@ -1,66 +1,43 @@
 <template>
   <NumberInput
     v-if="type === 'number'"
-    :value="value"
-    :min="min"
-    :max="max"
-    :theme="theme"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    :controls="controls"
-    :precision="precision"
-    :step="step"
-    @change="(v) => emit('change', v)"
+    @change="onValueChange"
+    @update:modelValue="onValueChange"
   />
 
   <PasswordInput
     v-else-if="type === 'password'"
-    :value="value"
-    :theme="theme"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    @change="(v) => emit('change', v)"
+    @change="onValueChange"
+    @update:modelValue="onValueChange"
   />
 
   <PhoneInput
     v-else-if="type === 'phone'"
-    :value="value"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    @change="(v) => emit('change', v)"
+    @change="onValueChange"
+    @update:modelValue="onValueChange"
   />
 
-  <BaseInput
-    v-else
-    :value="value"
-    :theme="theme"
-    :disabled="disabled"
-    :placeholder="placeholder"
-    :icon="currentIcon"
-    :icon-clickable="isIconClickable"
-    :icon-hided="isIconHided"
-    @icon="onIconClick"
-    @change="(v) => emit('change', v)"
-  >
-    <template #icon>
+  <BaseInput v-else @change="onValueChange" @update:modelValue="onValueChange">
+    <template v-if="slots?.icon" #icon>
       <slot name="icon" />
     </template>
   </BaseInput>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed } from "vue";
+import { defineProps, defineEmits, provide, useSlots, computed } from "vue";
 
 // Components
 import BaseInput from "./base.vue";
-import PasswordInput from "./password.vue";
 import NumberInput from "./number.vue";
+import PasswordInput from "./password.vue";
 import PhoneInput from "./phone.vue";
 
-const emit = defineEmits(["change", "icon"]);
-
+const emit = defineEmits(["change", "update:modelValue"]);
+const slots = useSlots();
 const props = defineProps({
   // Base
+  modelValue: { type: String, default: "" },
   value: { type: String, default: "" },
   type: { type: String, default: "text" },
   theme: { type: String, default: "primary" },
@@ -76,38 +53,21 @@ const props = defineProps({
   controls: { type: Boolean, default: false },
   precision: { type: Number, default: 2 },
   step: { type: Number, default: 1 },
+
+  // Phone
+  start: { type: String, default: "+7" },
+  replacements: { type: Object, default: () => ({ 8: "7", 9: "79" }) },
 });
 
-const currentIcon = computed(() => {
-  if (typeof props.icon === "string" && props.icon?.length) return props.icon;
+provide("dependencies", props);
+provide(
+  "currentValue",
+  computed(() => props.value || props.modelValue)
+);
 
-  return props.clearable ? "material-symbols:close" : null;
-});
-
-const isIconClickable = computed(() => {
-  if (typeof props.icon === "string" && props.icon?.length) {
-    return props.iconClickable;
-  }
-
-  return props.clearable;
-});
-
-const isIconHided = computed(() => {
-  if (typeof props.icon === "string" && props.icon?.length) return false;
-
-  return props.clearable ? !props.value.length : true;
-});
-
-function onIconClick() {
-  if (typeof props.icon === "string" && props.icon?.length) {
-    return emit("icon");
-  }
-
-  if (props.clearable) return clear();
-}
-
-function clear() {
-  emit("change", "");
+function onValueChange(newValue) {
+  emit("change", newValue);
+  emit("update:modelValue", newValue);
 }
 </script>
 

@@ -1,11 +1,6 @@
 <template>
   <div style="width: 20%; margin: 0 auto">
-    <Select
-      :value="kamal"
-      :options="options"
-      multiple
-      @change="(v) => (kamal = v)"
-    />
+    <Input v-model="kamal" type="phone" />
   </div>
 
   <p style="color: white">{{ kamal }}</p>
@@ -14,10 +9,9 @@
 <script setup>
 import { ref } from "vue";
 
-import Select from "@/components/Select";
-import Option from "@/components/Select/option.vue";
+import Input from "@/components/Input";
 
-const kamal = ref(null);
+const kamal = ref("kamal");
 const options = [
   "aaa ".repeat(50),
   "b".repeat(50),
