@@ -9,8 +9,6 @@
       v-model:filter="filterValue"
       :filterable="filterable"
       :placeholder="placeholder"
-      :keymap="getKey"
-      :label="getLabel"
       @tag="onTagClick"
     />
 
@@ -72,10 +70,12 @@ const opened = ref(false);
 const filterValue = ref("");
 
 const currentValue = computed(() => props.value || props.modelValue);
-const currentField = computed(() => getField(currentValue.value));
 
-provide("field", currentField);
 provide("value", currentValue);
+
+provide("getKey", getKey);
+provide("getField", getField);
+provide("getLabel", getLabel);
 
 provide("opened", opened);
 provide("open", open);
@@ -138,7 +138,7 @@ function checkIsSelected(option) {
   const field = getField(option);
 
   if (!props.multiple) {
-    return currentField.value === field;
+    return getField(currentValue.value) === field;
   }
 
   if (!Array.isArray(currentValue.value)) return false;

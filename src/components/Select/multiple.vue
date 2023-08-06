@@ -2,7 +2,7 @@
   <div class="select__field_multiple">
     <span
       v-if="!filterable && placeholder?.length"
-      v-show="!value?.length"
+      v-show="!currentValue?.length"
       class="select__field__placeholder"
     >
       {{ placeholder }}
@@ -10,12 +10,12 @@
 
     <div class="select__field__content">
       <span
-        v-for="(option, index) of value"
-        :key="keymap(option)"
+        v-for="(option, index) of currentValue"
+        :key="getKey(option)"
         class="select__field__content__tag"
         @click.stop="() => onTagClick(index, option)"
       >
-        {{ label(option) }}
+        {{ getLabel(option) }}
       </span>
 
       <input
@@ -44,12 +44,13 @@ const props = defineProps({
   filterable: { type: Boolean, default: false },
   filter: { type: String, default: "" },
   placeholder: { type: String, default: "Select" },
-  keymap: { type: Function, required: true },
-  label: { type: Function, required: true },
 });
 
-const value = inject("value");
+const currentValue = inject("value");
 const open = inject("open");
+
+const getKey = inject("getKey");
+const getLabel = inject("getLabel");
 
 function onFilterChange(event) {
   const { value: newFilterValue } = event.target;

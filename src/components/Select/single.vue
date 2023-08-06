@@ -27,16 +27,22 @@ const props = defineProps({
   placeholder: { type: String, default: "Select" },
 });
 
-const field = inject("field");
+const currentValue = inject("value");
 const opened = inject("opened");
 
+const getField = inject("getField");
+const getLabel = inject("getLabel");
+
+const currentField = computed(() => getField(currentValue.value));
+const currentLabel = computed(() => getLabel(currentValue.value));
+
 const inputValue = computed(() => {
-  return props.filterable && opened.value ? props.filter : field.value;
+  return props.filterable && opened.value ? props.filter : currentLabel.value;
 });
 
 const currentPlaceholder = computed(() => {
   if (props.filterable && opened.value) {
-    return field.value || props.placeholder;
+    return currentField.value || props.placeholder;
   }
 
   return props.placeholder;
