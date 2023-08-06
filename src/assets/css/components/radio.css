@@ -49,8 +49,10 @@
 .radio.radio_point .radio__item::before {
   content: "";
   display: flex;
-  width: 0.85em;
-  height: 0.85em;
+  min-width: 0.85em;
+  min-height: 0.85em;
+  max-width: 0.85em;
+  max-height: 0.85em;
   border-radius: 100%;
   border: 2px solid grey;
   transition: 0.15s linear;

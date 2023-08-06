@@ -16,11 +16,18 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, computed } from "vue";
+
+const emit = defineEmits(["change", "update:modelValue"]);
 
 const props = defineProps({
-  value: { required: true },
-  type: { type: String, default: "point" },
+  value: { required: false },
+  modelValue: { required: false },
+  type: {
+    type: String,
+    default: "point",
+    validator: (type) => ["point", "button"].includes(type),
+  },
   theme: { type: String, default: "primary" },
   items: { type: Array, default: [] },
   field: { type: String, required: false },
@@ -28,12 +35,13 @@ const props = defineProps({
   keymap: { type: Function, required: false },
 });
 
-const emit = defineEmits(["change"]);
+const currentValue = computed(() => props.value || props.modelValue);
 
 function onItemClick(item) {
   if (item?.disabled) return;
 
   emit("change", item);
+  emit("update:modelValue", item);
 }
 
 function getKey(item) {
@@ -45,10 +53,10 @@ function getKey(item) {
 function checkIsActiveItem(item) {
   try {
     if (props.field) {
-      return item[props.field] === props.value[props.field];
+      return item[props.field] === currentValue.value[props.field];
     }
 
-    return item === props.value;
+    return item === currentValue.value;
   } catch (err) {
     return false;
   }
