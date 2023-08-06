@@ -1,6 +1,13 @@
 <template>
   <div style="width: 20%; margin: 0 auto">
-    <Checkbox v-model="kamal" />
+    <Select
+      v-model="kamal"
+      :options="options"
+      multiple
+      filterable
+      label="name"
+      field="name"
+    />
   </div>
 
   <p style="color: white">{{ kamal }}</p>
@@ -9,19 +16,17 @@
 <script setup>
 import { ref } from "vue";
 
-import Input from "@/components/Input";
-import Checkbox from "@/components/Checkbox";
+import Select from "@/components/Select";
 
-const kamal = ref("kamal");
+const kamal = ref(null);
 const options = [
-  "aaa ".repeat(50),
-  "b".repeat(50),
-  "c".repeat(50),
-  "d".repeat(30),
-  "e".repeat(30),
-  "f".repeat(30),
-  "g".repeat(30),
-  "h".repeat(30),
+  { name: "Kamal".repeat(10) },
+  { name: "Ambar" },
+  { name: "Ambal" },
+  { name: "Lamar" },
+  { name: "Albert" },
+  { name: "Lukas" },
+  { name: "Mortimor" },
 ];
 </script>
 

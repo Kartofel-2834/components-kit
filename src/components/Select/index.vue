@@ -1,201 +1,182 @@
 <template>
   <div
     class="select"
-    :class="{
-      [theme]: true,
-      select_opened: opened && !disabled,
-      select_disabled: disabled,
-    }"
-    @click.stop
+    :class="{ [theme]: true, select_opened: opened }"
+    @click.stop="toggle"
   >
-    <div class="select__field" @click="toggleOptions">
-      <div v-if="multiple" class="select__field__content">
-        <span
-          v-for="(option, index) of value"
-          :key="option[field] || option || index"
-          class="select__field__content__tag"
-          @click.stop="() => onTagClick(index)"
-        >
-          {{ option[label] || option }}
-        </span>
+    <Multiple
+      v-if="multiple"
+      v-model:filter="filterValue"
+      :filterable="filterable"
+      :placeholder="placeholder"
+      :keymap="getKey"
+      :label="getLabel"
+      @tag="onTagClick"
+    />
 
-        <input
-          v-if="filterable"
-          v-model="filter"
-          :placeholder="placeholder"
-          :disabled="!filterable"
-          class="select__field__content__filter"
-          @click.stop="openOptions"
-        />
-      </div>
+    <Single
+      v-else
+      v-model:filter="filterValue"
+      :placeholder="placeholder"
+      :filterable="filterable"
+    />
 
-      <Input
-        v-else
-        :value="opened && filterable ? filter : currentLabel"
-        :placeholder="opened && filterable ? currentLabel : placeholder"
-        :disabled="!filterable"
-        @change="(v) => (filter = v)"
-      />
-
-      <Icon icon="ep:arrow-up-bold" class="select__opener" />
-    </div>
-
-    <div class="select__dropdown">
-      <slot
-        v-for="(option, index) in filteredOptions"
-        :key="option[field] || option || index"
-        :index="index"
-        :option="option"
-        :selected="checkIsSelected(option)"
-        :select="() => onSelect(option)"
-        name="option"
-      >
-        <Option
-          :key="option[field] || option || index"
-          :selected="checkIsSelected(option)"
-          @click="() => onSelect(option)"
-        >
-          {{ option }}
-        </Option>
-      </slot>
-
+    <div class="select__options" @click.stop>
       <Option
-        v-if="!filteredOptions?.length"
-        disabled
-        class="select__dropdown__nodata"
+        v-for="option in filteredOptions"
+        :key="getKey(option)"
+        :selected="checkIsSelected(option)"
+        @click="() => onSelect(option)"
       >
-        No options
+        {{ getLabel(option) }}
       </Option>
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, computed, onMounted } from "vue";
+import {
+  defineProps,
+  defineEmits,
+  ref,
+  provide,
+  computed,
+  onMounted,
+  onUnmounted,
+} from "vue";
 
 // Components
-import { Icon } from "@iconify/vue";
-import Input from "../Input";
 import Option from "./option.vue";
+import Multiple from "./multiple.vue";
+import Single from "./single.vue";
 
-const emit = defineEmits(["change"]);
+const emit = defineEmits(["change", "update:modelValue"]);
 
 const props = defineProps({
-  value: { required: true },
-  disabled: { type: Boolean, default: false },
+  value: { required: false },
+  modelValue: { required: false },
+
   multiple: { type: Boolean, default: false },
   filterable: { type: Boolean, default: false },
-  placeholder: { type: String, default: "Select" },
-  field: { type: String, default: "value" },
-  label: { type: String, default: "label" },
+  filter: { type: Function, required: false },
   theme: { type: String, default: "primary" },
+  placeholder: { type: String, default: "Select" },
+
   options: { type: Array, default: () => [] },
+  field: { type: [String, Function], default: "value" },
+  label: { type: [String, Function], default: "label" },
+  keymap: { type: [String, Function], default: "id" },
 });
 
 const opened = ref(false);
-const filter = ref("");
+const filterValue = ref("");
 
-const currentLabel = computed(() => {
-  if (!props.value || props.multiple) return "";
+const currentValue = computed(() => props.value || props.modelValue);
+const currentField = computed(() => getField(currentValue.value));
 
-  return props.value[props.label] || props.value;
-});
+provide("field", currentField);
+provide("value", currentValue);
+
+provide("opened", opened);
+provide("open", open);
 
 const filteredOptions = computed(() => {
-  if (!props.filterable || !filter.value.length) return props.options;
+  if (!props.filterable || !filterValue.value.length) return props.options;
 
   if (!Array.isArray(props.options)) return [];
 
-  const tester = new RegExp(`${filter.value}`, "gm");
+  let filterFunction = props.filter;
 
-  return props.options.filter((option) => {
-    const v = option[props.field] || option;
+  if (typeof filterFunction !== "function") {
+    const lowerFilter = filterValue.value.toLowerCase();
 
-    return tester.test(`${v}`);
-  });
+    filterFunction = (option) => {
+      return String(getField(option)).toLowerCase().includes(lowerFilter);
+    };
+  }
+
+  return props.options.filter(filterFunction);
 });
 
-function onTagClick(tagIndex) {
-  const update = Array.from(props.value);
-  update.splice(tagIndex, 1);
-  emit("change", update);
-}
-
-function onSelect(option) {
-  if (props.multiple) {
-    multipleSelect(option);
-  } else {
-    singleSelect(option);
-  }
-}
-
-function openOptions() {
-  if (props.disabled) return;
-
-  opened.value = true;
-}
-
-function toggleOptions() {
-  if (props.disabled) return;
-
+function toggle() {
   opened.value = !opened.value;
 }
 
-function singleSelect(option) {
-  if (checkIsEqualOptions(props.value, option)) {
-    emit("change", null);
-  } else {
-    emit("change", option);
-  }
-
+function close() {
   opened.value = false;
 }
 
-function multipleSelect(option) {
-  if (!Array.isArray(props.value)) return emit("change", [option]);
+function open() {
+  opened.value = true;
+}
 
-  const update = Array.from(props.value);
-  const selectedIndex = checkIsMultipleSelected(option);
-
-  if (selectedIndex === null) {
-    update.push(option);
-  } else {
-    update.splice(selectedIndex, 1);
+function getValue(option, field) {
+  if (typeof props[field] === "function") {
+    return props[field](option);
   }
 
-  emit("change", update);
+  if (!option?.hasOwnProperty || !option.hasOwnProperty(props[field])) {
+    return option;
+  }
+
+  return option[props[field]];
+}
+
+function getKey(option) {
+  return getValue(option, "keymap") || getField(option);
+}
+
+function getField(option) {
+  return getValue(option, "field");
+}
+
+function getLabel(option) {
+  return getValue(option, "label");
 }
 
 function checkIsSelected(option) {
-  if (!props.multiple) return checkIsEqualOptions(props.value, option);
+  const field = getField(option);
 
-  return checkIsMultipleSelected(option) !== null;
-}
-
-function checkIsMultipleSelected(option) {
-  if (!Array.isArray(props.value)) return null;
-
-  for (let index = 0; index < props.value.length; index++) {
-    if (checkIsEqualOptions(props.value[index], option)) return index;
+  if (!props.multiple) {
+    return currentField.value === field;
   }
 
-  return null;
+  if (!Array.isArray(currentValue.value)) return false;
+
+  return !!currentValue.value.find((v) => getField(v) === field);
 }
 
-function checkIsEqualOptions(a, b) {
-  if (!a) return false;
+function onSelect(option) {
+  if (checkIsSelected(option)) return;
 
-  if (a[props.field]) {
-    return a[props.field] === b[props.field];
+  let update = option;
+
+  if (props.multiple) {
+    update = Array.isArray(currentValue.value)
+      ? [...currentValue.value, update]
+      : [update];
+  } else {
+    close();
   }
 
-  return a === b;
+  emit("change", update);
+  emit("update:modelValue", update);
+}
+
+function onTagClick(tagIndex) {
+  const update = Array.from(currentValue.value);
+  update.splice(tagIndex, 1);
+
+  emit("change", update);
+  emit("update:modelValue", update);
 }
 
 onMounted(() => {
-  window.addEventListener("click", (event) => {
-    opened.value = false;
-  });
+  window.addEventListener("click", close);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("click", close);
 });
 </script>
 

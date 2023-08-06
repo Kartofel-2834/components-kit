@@ -1,48 +1,99 @@
 .select {
   position: relative;
+  --selected: rgba(255, 255, 255, 20%);
 }
 
-.select_disabled {
-  opacity: 0.7;
+.select__field .input:disabled {
+  opacity: 1;
 }
 
-.select__field {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.select__field__opener {
+  cursor: pointer;
+  width: 0.8em;
+  height: 0.8em;
+  transition: 0.2s ease-in-out;
+}
+
+.select__options {
+  position: absolute;
+  max-height: 15em;
+  overflow-y: auto;
+  width: calc(100% - 2px);
+  background-color: var(--theme-filled);
+  color: var(--theme-text);
+  border: 1px solid grey;
+  border-top: 0;
+  transform: scaleY(0%);
+  transform-origin: top;
+  transition: 0.2s ease-in-out;
+}
+
+.select__options__option {
+  overflow: hidden;
+  max-width: 100%;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.75em 1em;
+  border-bottom: 1px solid grey;
+  transition: 0.2s ease-in-out;
+}
+
+.select__options__option_selected,
+.select__options__option:hover {
+  background-color: var(--selected);
+}
+
+.select__options__option_selected {
+  cursor: default;
+  border-color: var(--selected);
+}
+
+/* Multiple */
+
+.select__field_multiple {
+  display: grid;
+  grid-template-columns: auto min-content;
+  grid-template-rows: 1fr;
+  align-items: center;
+  gap: 0.5em;
+
+  font-size: 1.15em;
+  min-height: 1.6em;
+  padding: 0.5em;
+  border: 1px solid var(--theme-text);
+  color: var(--theme-text);
+  background-color: transparent;
+  transition: 0.2s ease-in-out;
+}
+
+.select__field__content,
+.select__field__placeholder {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
 }
 
 .select__field__content {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
-  width: calc(100% - 1.7em);
-  min-height: 1.75em;
+  overflow: hidden;
   gap: 0.5em;
-  padding: 0.5em 0.85em;
-  background: var(--theme-filled);
-  color: var(--theme-text);
-  border: 1px solid var(--theme-text);
-  transition: 0.2s ease-in-out;
 }
 
-.select__field__content__filter {
-  appearance: none;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: var(--theme-text);
-  font-size: 1em;
+.select__field__placeholder {
+  opacity: 0.6;
+  margin: auto 0;
+  margin-left: 0.5em;
 }
 
 .select__field__content__tag {
   max-width: 20%;
   max-height: 1em;
   text-overflow: ellipsis;
+  text-wrap: nowrap;
   overflow: hidden;
   user-select: none;
   padding: 0.45em 0.75em;
-  background-color: rgba(255, 255, 255, 20%);
+  background-color: var(--selected);
   font-size: 0.85em;
   border-radius: 4px;
   font-weight: 800;
@@ -54,71 +105,31 @@
   opacity: 0.8;
 }
 
-.select .inputbase .input {
-  cursor: pointer;
-  opacity: 1;
-}
-
-.select__opener {
-  position: absolute;
-  align-self: flex-end;
-  margin-right: 0.65em;
-  cursor: pointer;
+.select__field__content__filter {
+  outline: none;
+  font-size: inherit;
+  background-color: transparent;
+  padding-left: 0.5em;
+  max-width: 8em;
+  border: none;
   color: var(--theme-text);
-  font-size: 1em;
-  padding: 0.15em;
-  transition: 0.2s ease-in-out;
-  z-index: 10;
 }
 
-.select__dropdown {
-  position: absolute;
-  max-height: 15em;
-  overflow-y: scroll;
-  width: 100%;
-  background-color: var(--theme-filled);
-  border: 1px solid grey;
-  border-top: 0;
-  color: var(--theme-text);
-  transform: scaleY(0%);
-  transform-origin: top;
-  transition: 0.2s ease-in-out;
-}
-
-.select__dropdown__nodata {
-  text-align: center;
-}
-
-.select__dropdown__option {
-  overflow: hidden;
-  max-width: 100%;
-  cursor: pointer;
-  font-weight: 600;
-  padding: 0.75em 1em;
-  border-bottom: 1px solid grey;
-  transition: 0.2s ease-in-out;
-}
-
-.select__dropdown__option_selected,
-.select__dropdown__option:hover {
-  background-color: rgba(255, 255, 255, 20%);
-}
-
-.select__dropdown__option_selected {
-  border-color: rgba(255, 255, 255, 20%);
+.select__field_multiple .select__field__opener {
+  margin-right: 0.5em;
 }
 
 /* Opened */
 
-.select_opened .select__field__content,
-.select_opened .inputbase .input {
+.select_opened .select__field .input,
+.select_opened .select__field_multiple {
   border-color: var(--theme);
 }
 
-.select_opened .select__dropdown {
-  transform: scaleY(100%);
+.select_opened .select__field__opener {
+  transform: rotate(180deg);
 }
 
-.select_opened .select__opener {
-  transform: rotate(180deg);
+.select_opened .select__options {
+  transform: scaleY(100%);
 }

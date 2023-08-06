@@ -1,7 +1,7 @@
 <template>
   <div
-    class="select__dropdown__option"
-    :class="{ select__dropdown__option_selected: selected }"
+    class="select__options__option"
+    :class="{ select__options__option_selected: selected }"
   >
     <slot />
   </div>
