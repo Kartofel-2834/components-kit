@@ -1,6 +1,6 @@
 <template>
   <div style="width: 20%; margin: 0 auto">
-    <Input v-model="kamal" type="phone" />
+    <Checkbox v-model="kamal" />
   </div>
 
   <p style="color: white">{{ kamal }}</p>
@@ -10,6 +10,7 @@
 import { ref } from "vue";
 
 import Input from "@/components/Input";
+import Checkbox from "@/components/Checkbox";
 
 const kamal = ref("kamal");
 const options = [

@@ -19,7 +19,8 @@ const dependencies = inject("dependencies");
 const currentValue = inject("currentValue");
 
 const parsedValue = computed(() => {
-  const digistOnly = currentValue.value.replace(/\D/g, "");
+  const value = `${currentValue.value}`;
+  const digistOnly = value.replace(/\D/g, "");
 
   if (currentValue.value !== digistOnly) {
     emit("change", digistOnly);
