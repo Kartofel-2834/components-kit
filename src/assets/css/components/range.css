@@ -1,0 +1,64 @@
+.range {
+  user-select: none;
+  display: grid;
+  height: 5px;
+  background-color: grey;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  border-radius: 8px;
+}
+
+.range > * {
+  grid-row: 1 / 2;
+  grid-column: 1 / 2;
+}
+
+.range__bar {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  width: 0%;
+  background-color: var(--theme);
+  border-radius: 8px;
+  transform-origin: left;
+}
+
+.range__bar__button {
+  display: flex;
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  background: white;
+  border-radius: 100%;
+  transform: translateX(0.5em);
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.range__marks {
+  z-index: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin: auto 0;
+  justify-content: space-between;
+}
+
+.range__marks__mark {
+  width: 5px;
+  height: 5px;
+  border-radius: 100%;
+  background-color: white;
+}
+
+.range__marks__mark:last-child {
+  opacity: 0;
+}
+
+/* Dragging */
+
+.range_dragging .range__bar__button {
+  transform: translateX(0.5em) scale(1.15);
+}
