@@ -1,44 +1,29 @@
 <template>
-  <div class="upload__single upload__single_simple">
-    <div class="upload__single__label">
+  <div class="upload__simple">
+    <div class="upload__simple__label">
       <span>
-        <slot name="label" :file="file" :filename="file?.name">
-          {{ file?.name || placeholder }}
-        </slot>
+        <slot name="label"> Click to upload file </slot>
       </span>
     </div>
 
-    <Button class="upload__single__button">
+    <Button class="upload__simple__button">
       <slot name="button">Upload</slot>
     </Button>
   </div>
 </template>
 
 <script setup>
-import { defineProps, inject } from "vue";
-
-// Components
 import Button from "@/components/Button";
-
-const props = defineProps({
-  type: {
-    type: String,
-    default: "simple",
-    validator: (type) => ["simple"].includes(type),
-  },
-});
-
-const file = inject("file", null);
 </script>
 
 <style>
-.upload__single {
+.upload__simple {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
-.upload__single__label {
+.upload__simple__label {
   display: flex;
   align-items: center;
   padding: 0 1em;
@@ -54,7 +39,7 @@ const file = inject("file", null);
   transition: 0.2s ease-in-out;
 }
 
-.upload__single__label span {
+.upload__simple__label span {
   display: block;
   max-width: 100%;
   white-space: nowrap;
@@ -62,15 +47,15 @@ const file = inject("file", null);
   overflow: hidden;
 }
 
-.upload__single__button {
+.upload__simple__button {
   pointer-events: none;
 }
 
-.upload__single:hover .upload__single__label {
+.upload__simple:hover .upload__simple__label {
   border-color: var(--primary);
 }
 
-.upload__single:hover .upload__single__button {
+.upload__simple:hover .upload__simple__button {
   border-color: var(--primary);
   background-color: var(--primary);
 }

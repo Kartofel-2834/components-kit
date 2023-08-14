@@ -1,7 +1,9 @@
 <template>
   <div style="width: 80%; margin: 0 auto">
-    <Upload :test="validation">
-      <template #button> Загрузить </template>
+    <Upload type="card">
+      <template #file-docx>
+        <span style="color: blueviolet"> DOCX </span>
+      </template>
     </Upload>
   </div>
 
@@ -12,6 +14,7 @@
 import { ref } from "vue";
 
 import Upload from "@/components/Upload";
+import Button from "@/components/Button";
 
 const kamal = ref(null);
 
