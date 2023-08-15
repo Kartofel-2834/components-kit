@@ -1,11 +1,15 @@
-export default function formatPhone(
-  str,
-  start = "+7",
-  equivalents = { 8: "7", 9: "79" }
-) {
-  if (!str.length) return str;
+export type Equivalents = {
+  [key: number]: string;
+};
 
-  let digitsOnly = str.replace(/\D/g, "");
+export default function formatPhone(
+  data: string,
+  start: string = "+7",
+  equivalents: Equivalents = { 8: "7", 9: "79" }
+): string {
+  if (!data.length) return data;
+
+  let digitsOnly = data.replace(/\D/g, "");
 
   for (const equivalent in equivalents) {
     if (!new RegExp(`^${equivalent}`).test(digitsOnly)) continue;

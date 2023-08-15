@@ -17,20 +17,34 @@
   </button>
 </template>
 
-<script setup>
-import { defineProps, useSlots } from "vue";
+<script setup lang="ts">
+import { defineProps, withDefaults, useSlots } from "vue";
+
+// Types
+import { Slots } from "vue";
 
 // Components
 import { Icon } from "@iconify/vue";
 
-const slots = useSlots();
-const props = defineProps({
-  theme: { type: String, default: "primary" },
-  icon: { type: String, default: "" },
-  disabled: { type: Boolean, default: false },
-  rounded: { type: Boolean, default: false },
-  filled: { type: Boolean, default: false },
-  reverse: { type: Boolean, default: false },
+export interface IButton {
+  theme?: string;
+  icon?: string;
+
+  disabled?: boolean;
+  rounded?: boolean;
+  filled?: boolean;
+  reverse?: boolean;
+}
+
+const slots: Slots = useSlots();
+
+withDefaults(defineProps<IButton>(), {
+  theme: "primary",
+  icon: "",
+  disabled: false,
+  rounded: false,
+  filled: false,
+  reverse: false,
 });
 </script>
 

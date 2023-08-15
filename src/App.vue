@@ -1,31 +1,13 @@
 <template>
-  <div style="width: 80%; margin: 0 auto">
-    <Upload type="card">
-      <template #file-docx>
-        <span style="color: blueviolet"> DOCX </span>
-      </template>
-    </Upload>
-  </div>
-
-  <p style="color: white">{{ kamal }}</p>
+  <Button @click="a">Kamal</Button>
 </template>
 
-<script setup>
-import { ref } from "vue";
-
-import Upload from "@/components/Upload";
+<script lang="ts" setup>
+// Components
 import Button from "@/components/Button";
 
-const kamal = ref(null);
-
-function validation(file) {
-  const { name: filename } = file;
-
-  if (!filename) return false;
-
-  const extension = filename.slice(filename.lastIndexOf(".") + 1);
-
-  return /txt/.test(extension);
+function a() {
+  alert(2);
 }
 </script>
 
