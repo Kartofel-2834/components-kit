@@ -12,13 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  defineProps,
-  defineEmits,
-  withDefaults,
-  useSlots,
-  computed,
-} from "vue";
+import { useSlots, computed } from "vue";
 
 // Components
 import { Icon } from "@iconify/vue";
@@ -27,20 +21,22 @@ import { Icon } from "@iconify/vue";
 import { Slots } from "vue";
 
 // Interfaces
-interface Props {
-  theme?: string;
+import { IComponent } from "@/interfaces/index";
+
+interface IProps extends IComponent {
   value?: boolean;
   modelValue?: boolean;
 }
 
-interface Emit {
+interface IEvents {
   (event: "change", value: boolean): void;
   (event: "update:modelValue", value: boolean): void;
 }
 
-const emit = defineEmits<Emit>();
+const emit = defineEmits<IEvents>();
+
 const slots: Slots = useSlots();
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<IProps>(), {
   theme: "primary",
 });
 

@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, withDefaults, useSlots } from "vue";
+import { useSlots } from "vue";
 
 // Components
 import { Icon } from "@iconify/vue";
@@ -27,8 +27,9 @@ import { Icon } from "@iconify/vue";
 import { Slots } from "vue";
 
 // Interfaces
-interface Props {
-  theme?: string;
+import { IComponent } from "@/interfaces/index";
+
+interface IProps extends IComponent {
   icon?: string;
   disabled?: boolean;
   rounded?: boolean;
@@ -38,7 +39,7 @@ interface Props {
 
 const slots: Slots = useSlots();
 
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<IProps>(), {
   theme: "primary",
   icon: "",
   disabled: false,

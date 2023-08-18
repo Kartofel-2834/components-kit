@@ -4,7 +4,7 @@ export type Equivalents = {
 
 export default function formatPhone(
   data: string,
-  start: string = "+7",
+  start = "+7",
   equivalents: Equivalents = { 8: "7", 9: "79" }
 ): string {
   if (!data.length) return data;

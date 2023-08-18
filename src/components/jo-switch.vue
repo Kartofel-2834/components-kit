@@ -11,23 +11,25 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits, withDefaults, computed } from "vue";
+import { computed } from "vue";
 
-interface Props {
-  theme?: string;
+// Interfaces
+import { IComponent } from "@/interfaces/index";
+
+interface IProps extends IComponent {
   value?: boolean;
   modelValue?: boolean;
   disabled?: boolean;
 }
 
-interface Emit {
+interface IEvents {
   (event: "change", value: boolean): void;
   (event: "update:modelValue", value: boolean): void;
 }
 
-const emit = defineEmits<Emit>();
+const emit = defineEmits<IEvents>();
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<IProps>(), {
   theme: "primary",
   value: false,
   modelValue: false,
