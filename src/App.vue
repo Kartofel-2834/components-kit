@@ -3,12 +3,7 @@
 
   <jo-link>{{ kamal }}</jo-link>
 
-  <jo-radio
-    v-model="kamal"
-    :items="[{ label: 'a' }, { label: 'b' }, { label: 'c' }]"
-    label="label"
-    keymap="label"
-  />
+  <jo-range v-model="kamal" />
 </template>
 
 <script lang="ts" setup>
@@ -20,9 +15,9 @@ import { Ref } from "vue";
 // Components
 import JoButton from "@/components/jo-button.vue";
 import JoLink from "@/components/jo-link.vue";
-import JoRadio from "@/components/jo-radio.vue";
+import JoRange from "@/components/jo-range.vue";
 
-const kamal: Ref<string> = ref("");
+const kamal: Ref<number> = ref(0);
 
 function a() {
   alert(2);
