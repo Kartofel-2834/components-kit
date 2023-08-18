@@ -2,10 +2,6 @@ export interface IComponent {
   theme?: string;
 }
 
-export interface IDictionary<Type> {
-  [key: string]: Type;
-}
-
 // It's need use when generics support added to Vue
 
 export interface IBindingComponentProps<Type> extends IComponent {

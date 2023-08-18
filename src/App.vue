@@ -1,9 +1,14 @@
 <template>
   <jo-button @click="a">Kamal</jo-button>
 
-  <jo-link>Kamal</jo-link>
+  <jo-link>{{ kamal }}</jo-link>
 
-  <jo-input v-model="kamal" type="password" />
+  <jo-radio
+    v-model="kamal"
+    :items="[{ label: 'a' }, { label: 'b' }, { label: 'c' }]"
+    label="label"
+    keymap="label"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -15,7 +20,7 @@ import { Ref } from "vue";
 // Components
 import JoButton from "@/components/jo-button.vue";
 import JoLink from "@/components/jo-link.vue";
-import JoInput from "@/components/jo-input/index.vue";
+import JoRadio from "@/components/jo-radio.vue";
 
 const kamal: Ref<string> = ref("");
 

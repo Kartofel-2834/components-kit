@@ -17,8 +17,11 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
+// Types
+import { Dictionary } from "@/types";
+
 // Interfaces
-import { IComponent, IDictionary } from "@/interfaces/index";
+import { IComponent } from "@/interfaces";
 
 interface IProps extends IComponent {
   to?: string;
@@ -35,7 +38,7 @@ const props = withDefaults(defineProps<IProps>(), {
   disabled: false,
 });
 
-const linkClasses = computed<IDictionary<boolean>>(() => ({
+const linkClasses = computed<Dictionary<boolean>>(() => ({
   [props.theme]: true,
   "jo-link_without-line": props.withoutLine,
   "jo-link_left": props.lineOrigin === "left",
