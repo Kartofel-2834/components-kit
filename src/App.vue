@@ -3,7 +3,7 @@
 
   <jo-link>{{ kamal }}</jo-link>
 
-  <jo-range v-model="kamal" />
+  <jo-upload type="card" />
 </template>
 
 <script lang="ts" setup>
@@ -15,7 +15,7 @@ import { Ref } from "vue";
 // Components
 import JoButton from "@/components/jo-button.vue";
 import JoLink from "@/components/jo-link.vue";
-import JoRange from "@/components/jo-range.vue";
+import JoUpload from "@/components/jo-upload/index.vue";
 
 const kamal: Ref<number> = ref(0);
 

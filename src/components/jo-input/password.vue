@@ -13,7 +13,7 @@ import { defineComponent, ref, provide, inject, computed } from "vue";
 import JoBaseInput from "./base.vue";
 
 // Types
-import { Ref } from "vue";
+import { Ref, ComputedRef } from "vue";
 
 // Interface
 import { IProps } from "./index.vue";
@@ -25,7 +25,7 @@ defineComponent({
 const realType: Ref<string> = ref("password");
 const dependencies: IProps = inject("dependencies", {} as IProps);
 
-provide(
+provide<ComputedRef<IProps>>(
   "dependencies",
   computed<IProps>(() => ({
     ...dependencies,

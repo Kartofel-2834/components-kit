@@ -1,12 +1,12 @@
 <template>
-  <BaseInput type="phone" @change="onChange" @keydown="onKeydown" />
+  <jo-base-input type="phone" @change="onChange" @keydown="onKeydown" />
 </template>
 
 <script lang="ts" setup>
 import { defineComponent, computed, provide, inject, ComputedRef } from "vue";
 
 // Components
-import BaseInput from "./base.vue";
+import JoBaseInput from "./base.vue";
 
 // Utils
 import formatPhone from "../../utils/formatPhone";

@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, provide, useSlots, computed } from "vue";
+import { defineComponent, provide, useSlots, computed, ComputedRef } from "vue";
 
 // Components
 import JoBaseInput from "./base.vue";
@@ -38,10 +38,14 @@ import JoPasswordInput from "./password.vue";
 import JoPhoneInput from "./phone.vue";
 
 // Types
+import { Slots } from "vue";
 import { Equivalents } from "../../utils/formatPhone";
 
 // Interfaces
-// import { IComponent } from "../../interfaces/index";
+interface IEvents {
+  (event: "change", value: string): void;
+  (event: "update:modelValue", value: string): void;
+}
 
 export interface IProps {
   // Base
@@ -72,8 +76,8 @@ defineComponent({
   name: "jo-input",
 });
 
-const emit = defineEmits(["change", "update:modelValue"]);
-const slots = useSlots();
+const emit = defineEmits<IEvents>();
+const slots: Slots = useSlots();
 
 const props = withDefaults(defineProps<IProps>(), {
   modelValue: "",
@@ -96,13 +100,13 @@ const props = withDefaults(defineProps<IProps>(), {
   replacements: () => ({ 8: "7", 9: "79" }),
 });
 
-provide("dependencies", props);
-provide(
+provide<IProps>("dependencies", props);
+provide<ComputedRef<string>>(
   "currentValue",
-  computed(() => props.value || props.modelValue)
+  computed<string>(() => props.value || props.modelValue)
 );
 
-function onValueChange(newValue: string) {
+function onValueChange(newValue: string): void {
   emit("change", newValue);
   emit("update:modelValue", newValue);
 }

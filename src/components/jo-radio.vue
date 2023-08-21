@@ -18,7 +18,7 @@
   </div>
 </template>
 
-<script lang="ts" generic="IKamal extends string" setup>
+<script lang="ts" setup>
 import { computed } from "vue";
 
 // Types

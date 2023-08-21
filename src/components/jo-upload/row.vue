@@ -6,14 +6,21 @@
       </span>
     </div>
 
-    <Button class="upload__simple__button">
+    <jo-button class="upload__simple__button">
       <slot name="button">Upload</slot>
-    </Button>
+    </jo-button>
   </div>
 </template>
 
-<script setup>
-import Button from "@/components/Button";
+<script lang="ts" setup>
+import { defineComponent } from "vue";
+
+// Components
+import JoButton from "../jo-button.vue";
+
+defineComponent({
+  name: "jo-upload-row",
+});
 </script>
 
 <style>

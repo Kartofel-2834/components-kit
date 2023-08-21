@@ -2,7 +2,7 @@ export type Dictionary<Type> = {
   [key: string]: Type;
 };
 
-export type ElementKey = string | number | symbol | undefined;
+export type ElementKey = string | number | undefined;
 
 export type Item =
   | string

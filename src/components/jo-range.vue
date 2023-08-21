@@ -20,13 +20,14 @@
 </template>
 
 <script lang="ts" setup>
-import { IComponent } from "@/interfaces";
 import { computed, ref, onMounted, onUnmounted } from "vue";
 
 // Types
 import { Ref } from "vue";
 
 // Interfaces
+import { IComponent } from "@/interfaces";
+
 interface IProps extends IComponent {
   value?: number;
   modelValue?: number;

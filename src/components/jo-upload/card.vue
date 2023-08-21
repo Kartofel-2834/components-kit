@@ -20,22 +20,36 @@
   </div>
 </template>
 
-<script setup>
-import { computed } from "vue";
+<script lang="ts" setup>
+import { defineComponent, computed } from "vue";
 
 // Components
 import { Icon } from "@iconify/vue";
 
-const props = defineProps({
-  file: { type: Object, default: null },
-  extension: { type: String, required: false },
-  fileurl: { type: String, required: false },
-  editable: { type: Boolean, default: false },
+// Interfaces
+interface IProps {
+  file?: File | null;
+  extension?: string;
+  fileurl?: string;
+  editable?: boolean;
+}
+
+defineComponent({
+  name: "jo-upload-card",
 });
 
-const isImage = computed(
-  () => props.fileurl && /jpg|jpeg|png/.test(props.extension)
-);
+const props = withDefaults(defineProps<IProps>(), {
+  file: null,
+  editable: false,
+});
+
+const isImage = computed<boolean>(() => {
+  return !!(
+    props.fileurl &&
+    props.extension &&
+    /jpg|jpeg|png/.test(props.extension)
+  );
+});
 </script>
 
 <style>
