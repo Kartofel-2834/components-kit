@@ -1,14 +1,16 @@
 <template>
-  <div
+  <label
     class="jo-checkbox"
     :class="{ [theme]: true, 'jo-checkbox_active': currentValue }"
-    @click="onToggle"
+    @change="onChange"
   >
     <div class="jo-checkbox__icon">
       <Icon icon="material-symbols:check" />
     </div>
     <span v-if="slots?.default"><slot /></span>
-  </div>
+
+    <input type="checkbox" class="jo-checkbox__input" />
+  </label>
 </template>
 
 <script lang="ts" setup>
@@ -44,9 +46,11 @@ const currentValue = computed<boolean>(
   () => !!(props.modelValue || props.value)
 );
 
-function onToggle() {
-  emit("change", !currentValue.value);
-  emit("update:modelValue", !currentValue.value);
+function onChange(event: Event): void {
+  const target = event.target as HTMLInputElement;
+
+  emit("change", target.checked);
+  emit("update:modelValue", target.checked);
 }
 </script>
 
@@ -58,6 +62,10 @@ function onToggle() {
   width: fit-content;
   gap: 0.75em;
   cursor: pointer;
+}
+
+.jo-checkbox__input {
+  display: none;
 }
 
 .jo-checkbox__icon {
