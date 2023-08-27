@@ -1,9 +1,5 @@
 <template>
-  <jo-button @click="a">Kamal</jo-button>
-
-  <jo-link>{{ kamal }}</jo-link>
-
-  <jo-upload type="card" />
+  <jo-select v-model="kamal" :options="options" multiple filterable />
 </template>
 
 <script lang="ts" setup>
@@ -13,11 +9,10 @@ import { ref } from "vue";
 import { Ref } from "vue";
 
 // Components
-import JoButton from "@/components/jo-button.vue";
-import JoLink from "@/components/jo-link.vue";
-import JoUpload from "@/components/jo-upload/index.vue";
+import JoSelect from "@/components/jo-select/index.vue";
 
-const kamal: Ref<number> = ref(0);
+const kamal: Ref<string> = ref("");
+const options = ["Red", "Green", "Blue"];
 
 function a() {
   alert(2);

@@ -1,7 +1,7 @@
 <template>
   <div
-    class="select"
-    :class="{ [theme]: true, select_opened: opened }"
+    class="jo-select"
+    :class="{ [theme]: true, 'jo-select_opened': opened }"
     @click.stop="toggle"
   >
     <jo-multiple-select
@@ -19,7 +19,7 @@
       :filterable="filterable"
     />
 
-    <div class="select__options" @click.stop>
+    <div class="jo-select__options" @click.stop>
       <jo-select-option
         v-for="option in filteredOptions"
         :key="getKey(option)"
@@ -51,7 +51,6 @@ import JoSingleSelect from "./single.vue";
 import { Ref, ComputedRef } from "vue";
 import { ElementKey } from "../../types/index";
 
-//type ElementKey = string | number | symbol | undefined;
 export type Option = string | null | { [key: string]: any };
 export type PropertyPicker = (option: Option) => ElementKey;
 
@@ -74,8 +73,8 @@ interface IProps {
 
   options?: Array<Option>;
   field?: string | PropertyPicker;
-  label: string | PropertyPicker;
-  keymap: string | PropertyPicker;
+  label?: string | PropertyPicker;
+  keymap?: string | PropertyPicker;
 }
 
 defineComponent({
@@ -123,6 +122,7 @@ const filteredOptions = computed<Array<Option>>(() => {
 });
 
 function toggle(): void {
+  console.log("toggle");
   opened.value = !opened.value;
 }
 
@@ -134,12 +134,21 @@ function open(): void {
   opened.value = true;
 }
 
-function getValue(option: Option, field: string): ElementKey {
-  if (typeof props[field] === "function") {
-    return props[field](option);
+function getValue(
+  option: Option,
+  field: "keymap" | "field" | "label"
+): ElementKey {
+  if (typeof option === "string") return option;
+
+  if (field in props && props[field] instanceof Function) {
+    const mapper = props[field] as PropertyPicker;
+
+    return mapper(option);
   }
 
-  return option ? option[props[field]] : null;
+  const key = props[field] as string;
+
+  return option && key in option ? option[key] : null;
 }
 
 function getKey(option: Option): ElementKey {
@@ -204,4 +213,51 @@ onUnmounted(() => {
 });
 </script>
 
-<style src="@/assets/css/components/select.css" />
+<style>
+.jo-select {
+  position: relative;
+  --selected: rgba(255, 255, 255, 20%);
+}
+
+.jo-select__field .jo-input:disabled {
+  pointer-events: none;
+  cursor: pointer;
+  opacity: 1;
+}
+
+.jo-select__field__opener {
+  cursor: pointer;
+  width: 0.8em;
+  height: 0.8em;
+  transition: 0.2s ease-in-out;
+}
+
+.jo-select__options {
+  position: absolute;
+  max-height: 15em;
+  overflow-y: auto;
+  width: calc(100% - 2px);
+  background-color: var(--theme-filled);
+  color: var(--theme-text);
+  border: 1px solid grey;
+  border-top: 0;
+  transform: scaleY(0%);
+  transform-origin: top;
+  transition: 0.2s ease-in-out;
+}
+
+/* Opened */
+
+.jo-select_opened .jo-select__field .input,
+.jo-select_opened .jo-select__field_multiple {
+  border-color: var(--theme);
+}
+
+.jo-select_opened .jo-select__field__opener {
+  transform: rotate(180deg);
+}
+
+.jo-select_opened .jo-select__options {
+  transform: scaleY(100%);
+}
+</style>

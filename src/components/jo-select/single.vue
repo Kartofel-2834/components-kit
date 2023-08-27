@@ -3,11 +3,11 @@
     :value="inputValue"
     :placeholder="currentPlaceholder"
     :disabled="!filterable"
-    class="select__field"
+    class="jo-select__field"
     @change="onFilterChange"
   >
     <template #icon>
-      <Icon icon="ep:arrow-up-bold" class="select__field__opener" />
+      <Icon icon="ep:arrow-up-bold" class="jo-select__field__opener" />
     </template>
   </jo-input>
 </template>
