@@ -1,13 +1,20 @@
 <template>
-  <div
+  <label
     class="jo-switch"
     :class="{
       'jo-switch_active': currentValue,
       'jo-switch_disabled': disabled,
       [theme]: true,
     }"
-    @click="onValueChange"
-  />
+  >
+    <input
+      type="checkbox"
+      class="jo-switch__input"
+      :checked="currentValue"
+      :disabled="disabled"
+      @change="onChange"
+    />
+  </label>
 </template>
 
 <script lang="ts" setup>
@@ -40,11 +47,11 @@ const currentValue = computed<boolean>(
   () => !!(props.value || props.modelValue)
 );
 
-function onValueChange() {
-  if (props.disabled) return;
+function onChange(event: Event): void {
+  const target = event.target as HTMLInputElement;
 
-  emit("update:modelValue", !currentValue.value);
-  emit("change", !currentValue.value);
+  emit("update:modelValue", target.checked);
+  emit("change", target.checked);
 }
 </script>
 
@@ -80,5 +87,9 @@ function onValueChange() {
 
 .jo-switch_active::before {
   margin-left: calc(100% - 1.25em);
+}
+
+.jo-switch__input {
+  display: none;
 }
 </style>
