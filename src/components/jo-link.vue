@@ -9,9 +9,9 @@
     <slot />
   </a>
 
-  <div v-else class="jo-link" :class="linkClasses" :disabled="disabled">
+  <button v-else class="jo-link" :class="linkClasses" :disabled="disabled">
     <slot />
-  </div>
+  </button>
 </template>
 
 <script lang="ts" setup>
@@ -50,6 +50,9 @@ const linkClasses = computed<Dictionary<boolean>>(() => ({
 .jo-link {
   appearance: none;
   text-decoration: none;
+  border: none;
+  outline: none;
+  background-color: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
