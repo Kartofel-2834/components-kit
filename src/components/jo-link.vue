@@ -65,12 +65,12 @@ const linkClasses = computed<Dictionary<boolean>>(() => ({
   transition: 0.2s ease-in-out;
 }
 
-.jo-link:disabled,
-.jo-link[disabled="true"] {
+.jo-link:disabled {
   opacity: 0.8;
+  cursor: default;
 }
 
-.jo-link.jo-link_without-line:hover:not(:disabled, [disabled="true"]) {
+.jo-link.jo-link_without-line:hover:not(:disabled) {
   color: var(--theme);
 }
 
@@ -96,7 +96,7 @@ const linkClasses = computed<Dictionary<boolean>>(() => ({
   transform-origin: right;
 }
 
-.jo-link:hover:not(:disabled, [disabled="true"])::after {
+.jo-link:hover:not(:disabled)::after {
   transform: scaleX(100%);
 }
 </style>
