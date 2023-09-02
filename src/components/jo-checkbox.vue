@@ -7,7 +7,10 @@
     <div class="jo-checkbox__icon">
       <Icon icon="material-symbols:check" />
     </div>
-    <span v-if="slots?.default"><slot /></span>
+
+    <span v-if="slots?.default" class="jo-checkbox__label">
+      <slot />
+    </span>
 
     <input type="checkbox" class="jo-checkbox__input" />
   </label>
@@ -23,9 +26,8 @@ import { Icon } from "@iconify/vue";
 import { Slots } from "vue";
 
 // Interfaces
-import { IComponent } from "@/interfaces/index";
-
-interface IProps extends IComponent {
+interface IProps {
+  theme?: string;
   value?: boolean;
   modelValue?: boolean;
 }

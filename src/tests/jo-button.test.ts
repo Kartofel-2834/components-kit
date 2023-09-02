@@ -45,7 +45,7 @@ describe("Content", () => {
 
     const icon = getIcon(button.element);
 
-    expect(icon).not.toBeNull();
+    expect(icon).not.toBeFalsy();
   });
 
   test("Icon exist if icon slot used", async () => {
@@ -57,6 +57,6 @@ describe("Content", () => {
 
     const icon = getIcon(button.element);
 
-    expect(icon).not.toBeNull();
+    expect(icon).not.toBeFalsy();
   });
 });
