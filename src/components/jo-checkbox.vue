@@ -12,7 +12,7 @@
       <slot />
     </span>
 
-    <input type="checkbox" class="jo-checkbox__input" />
+    <input type="checkbox" :checked="currentValue" class="jo-checkbox__input" />
   </label>
 </template>
 
