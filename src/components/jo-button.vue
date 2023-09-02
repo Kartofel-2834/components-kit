@@ -27,9 +27,8 @@ import { Icon } from "@iconify/vue";
 import { Slots } from "vue";
 
 // Interfaces
-import { IComponent } from "@/interfaces/index";
-
-interface IProps extends IComponent {
+interface IProps {
+  theme?: string;
   icon?: string;
   disabled?: boolean;
   rounded?: boolean;
