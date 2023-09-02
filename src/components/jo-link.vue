@@ -21,9 +21,8 @@ import { computed } from "vue";
 import { Dictionary } from "@/types";
 
 // Interfaces
-import { IComponent } from "@/interfaces";
-
-interface IProps extends IComponent {
+interface IProps {
+  theme?: string;
   to?: string;
   lineOrigin?: string;
   withoutLine?: boolean;
