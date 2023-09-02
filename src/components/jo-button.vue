@@ -13,7 +13,9 @@
   >
     <span class="jo-button__content"><slot /></span>
 
-    <Icon :icon="icon" class="jo-button__icon" />
+    <slot name="icon">
+      <Icon v-if="icon" :icon="icon" class="jo-button__icon" />
+    </slot>
   </button>
 </template>
 
