@@ -60,3 +60,29 @@ describe("Content", () => {
     expect(icon).not.toBeFalsy();
   });
 });
+
+describe("Styles", () => {
+  const button: VueWrapper = mount(JoButton);
+
+  function findClass(regex: RegExp): string | undefined {
+    return button.classes().find((className: string) => regex.test(className));
+  }
+
+  test("JoButton can be made rounded", async () => {
+    await button.setProps({ rounded: true });
+
+    expect(findClass(/.+_rounded$/)).toBeTruthy();
+  });
+
+  test("JoButton can be made filled", async () => {
+    await button.setProps({ filled: true });
+
+    expect(findClass(/.+_filled$/)).toBeTruthy();
+  });
+
+  test("JoButton can be made reversed", async () => {
+    await button.setProps({ reverse: true });
+
+    expect(findClass(/.+_reverse$/)).toBeTruthy();
+  });
+});
