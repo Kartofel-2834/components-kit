@@ -6,7 +6,9 @@ import { VueWrapper } from "@vue/test-utils";
 // Component
 import JoButton from "@/components/jo-button.vue";
 
-describe("Events", () => {
+/* <--------- Behavior ---------> */
+
+describe("Behavior", () => {
   let button: VueWrapper;
 
   beforeEach(async () => {
@@ -30,6 +32,8 @@ describe("Events", () => {
     expect(events).not.toContain("click");
   });
 });
+
+/* <--------- Content ---------> */
 
 describe("Content", () => {
   function getIcon(element: Element) {
@@ -60,6 +64,8 @@ describe("Content", () => {
     expect(icon).not.toBeFalsy();
   });
 });
+
+/* <--------- Styles ---------> */
 
 describe("Styles", () => {
   const button: VueWrapper = mount(JoButton);

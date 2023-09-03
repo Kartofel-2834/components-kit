@@ -1,7 +1,11 @@
 <template>
   <label
     class="jo-checkbox"
-    :class="{ [theme]: true, 'jo-checkbox_active': currentValue }"
+    :class="{
+      [theme]: true,
+      'jo-checkbox_active': currentValue,
+      'jo-checkbox_disabled': disabled,
+    }"
     @change="onChange"
   >
     <div class="jo-checkbox__icon">
@@ -12,7 +16,12 @@
       <slot />
     </span>
 
-    <input type="checkbox" :checked="currentValue" class="jo-checkbox__input" />
+    <input
+      type="checkbox"
+      :checked="currentValue"
+      :disabled="disabled"
+      class="jo-checkbox__input"
+    />
   </label>
 </template>
 
@@ -30,6 +39,7 @@ interface IProps {
   theme?: string;
   value?: boolean;
   modelValue?: boolean;
+  disabled?: boolean;
 }
 
 interface IEvents {
@@ -42,6 +52,7 @@ const emit = defineEmits<IEvents>();
 const slots: Slots = useSlots();
 const props = withDefaults(defineProps<IProps>(), {
   theme: "primary",
+  disabled: false,
 });
 
 const currentValue = computed<boolean>(

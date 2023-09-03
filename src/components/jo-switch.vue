@@ -21,9 +21,8 @@
 import { computed } from "vue";
 
 // Interfaces
-import { IComponent } from "@/interfaces/index";
-
-interface IProps extends IComponent {
+interface IProps {
+  theme?: string;
   value?: boolean;
   modelValue?: boolean;
   disabled?: boolean;
