@@ -1,40 +1,40 @@
 <template>
-  <div
-    class="jo-range"
-    ref="rangeElement"
-    :class="{ [theme]: true, 'jo-range_dragging': isDragging }"
-    @mousedown="onDragStart"
-  >
-    <div v-if="marks" class="jo-range__marks">
+  <label class="jo-range" :class="{ [theme]: true }">
+    <div class="jo-range__content">
       <div
-        v-for="mark in marksList"
-        :key="mark"
-        class="jo-range__marks__mark"
-      />
+        class="jo-range__content__progress"
+        :style="{ transform: `scaleX(${progress}%)` }"
+      >
+        <span
+          class="jo-range__content__progress__ball"
+          :style="{ transform: `scaleX(${100 * (100 / progress)}%)` }"
+        />
+      </div>
     </div>
 
-    <div class="jo-range__bar" :style="{ width: `${progress}%` }">
-      <div class="jo-range__bar__button" />
-    </div>
-  </div>
+    <input
+      :value="currentValue"
+      class="jo-range__input"
+      type="range"
+      :min="min"
+      :max="max"
+      :step="step"
+      @input="onChange"
+    />
+  </label>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, onMounted, onUnmounted } from "vue";
-
-// Types
-import { Ref } from "vue";
+import { computed } from "vue";
 
 // Interfaces
-import { IComponent } from "@/interfaces";
-
-interface IProps extends IComponent {
+interface IProps {
+  theme?: string;
   value?: number;
   modelValue?: number;
-  marks?: boolean;
-  step?: number;
   min?: number;
   max?: number;
+  step?: number;
 }
 
 interface IEvents {
@@ -42,181 +42,97 @@ interface IEvents {
   (event: "update:modelValue", value: number): void;
 }
 
+const { floor } = Math;
+
 const emit = defineEmits<IEvents>();
 
 const props = withDefaults(defineProps<IProps>(), {
   theme: "primary",
-  marks: false,
-  step: 5,
+  value: 0,
+  modelValue: 0,
   min: 0,
   max: 100,
 });
 
-const rangeElement: Ref<HTMLDivElement | null> = ref(null);
-
-const start: Ref<number> = ref(0);
-const end: Ref<number> = ref(0);
-const isDragging: Ref<boolean> = ref(false);
-
-const currentValue = computed<number>(() => {
-  const modelValue = Number(props.modelValue);
-  const value = Number(props.value);
-  const min = Number(props.min);
-
-  if (!isNaN(modelValue)) return modelValue;
-  if (!isNaN(value)) return value;
-
-  return min;
-});
-
+const currentValue = computed<number>(() => props.value || props.modelValue);
 const percent = computed<number>(() => (props.max - props.min) / 100);
-const percentPx = computed<number>(() => (end.value - start.value) / 100);
 const progress = computed<number>(() => {
-  return (currentValue.value - props.min) / percent.value;
+  return floor((currentValue.value - props.min) / percent.value) || 0.25;
 });
 
-const marksList = computed<Array<number>>(() => {
-  const result: Array<number> = [];
+function onChange(event: Event): void {
+  const target = event.target as HTMLInputElement;
 
-  if (!props.marks) return result;
-
-  let mark: number;
-
-  for (mark = props.min; mark <= props.max; mark += props.step) {
-    result.push(mark);
-  }
-
-  return result;
-});
-
-function updateSizes(): void {
-  if (!rangeElement.value) return;
-
-  const bounding: DOMRect = rangeElement.value.getBoundingClientRect();
-
-  start.value = bounding?.left || 0;
-  end.value = bounding?.right || 0;
-}
-
-function updateValue(currentPointX: number): void {
-  let update: number = (currentPointX - start.value) / percentPx.value;
-
-  update = props.min + roundToStep(update * percent.value);
-
-  if (update > props.max) {
-    update = props.max;
-  } else if (update < props.min) {
-    update = props.min;
-  }
+  const update = Number(target.value);
 
   emit("change", update);
   emit("update:modelValue", update);
 }
-
-function onDragStart(event: MouseEvent): void {
-  updateSizes();
-  isDragging.value = true;
-  updateValue(event.x);
-}
-
-function onDragEnd(event: MouseEvent): void {
-  if (!isDragging.value) return;
-
-  isDragging.value = false;
-  updateValue(event.x);
-}
-
-function onDrag(event: MouseEvent): void {
-  if (isDragging.value) updateValue(event.x);
-}
-
-function roundToStep(someNumber: number): number {
-  const excessPart: number = someNumber % props.step;
-
-  if (!excessPart) return someNumber;
-
-  const a = someNumber - excessPart;
-  const b = a + props.step;
-
-  return someNumber - a > b - someNumber ? b : a;
-}
-
-onMounted(() => {
-  updateSizes();
-
-  window.addEventListener("mousemove", onDrag);
-  window.addEventListener("mouseup", onDragEnd);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("mousemove", onDrag);
-  window.removeEventListener("mousemove", onDragEnd);
-});
 </script>
 
 <style>
 .jo-range {
-  user-select: none;
   display: grid;
-  height: 5px;
-  background-color: grey;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  border-radius: 8px;
 }
 
 .jo-range > * {
-  grid-row: 1 / 2;
   grid-column: 1 / 2;
+  grid-row: 1 / 2;
 }
 
-.jo-range__bar {
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+.jo-range__input {
+  z-index: 10;
+  opacity: 0;
+  margin-top: -0.25em;
+  cursor: grab;
+}
 
-  width: 0%;
-  background-color: var(--theme);
+.jo-range__content {
   border-radius: 8px;
-  transform-origin: left;
-}
-
-.jo-range__bar__button {
   display: flex;
-  position: absolute;
-  width: 1em;
-  height: 1em;
-  background: white;
-  border-radius: 100%;
-  transform: translateX(0.5em);
-  cursor: pointer;
+  width: 100%;
+  height: 8px;
+  background-color: grey;
+  font-size: 2em;
+  color: white;
+  border-radius: 8px;
   transition: 0.2s ease-in-out;
 }
 
-.jo-range__marks {
-  z-index: 0;
-  width: 100%;
+.jo-range__content__progress {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  margin: auto 0;
-  justify-content: space-between;
+  border-radius: 8px;
+  width: 100%;
+  background-color: var(--theme);
+  transform-origin: left;
 }
 
-.jo-range__marks__mark {
-  width: 5px;
-  height: 5px;
+.jo-range__content__progress__ball {
+  cursor: grab;
+  content: "";
+  display: flex;
+  width: 24px;
+  height: 24px;
   border-radius: 100%;
-  background-color: white;
+  background-color: var(--theme-text);
 }
 
-.jo-range__marks__mark:last-child {
-  opacity: 0;
+/* Hover */
+.jo-range:hover .jo-range__content {
+  opacity: 0.7;
 }
 
-/* Dragging */
+/* Focus */
+.jo-range:active .jo-range__content {
+  opacity: 1;
+}
 
-.jo-range_dragging .jo-range__bar__button {
-  transform: translateX(0.5em) scale(1.15);
+.jo-range:active .jo-range__input,
+.jo-range:active .jo-range__content__progress__ball {
+  cursor: grabbing;
 }
 </style>
